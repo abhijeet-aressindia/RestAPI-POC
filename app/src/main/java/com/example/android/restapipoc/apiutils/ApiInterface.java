@@ -1,4 +1,4 @@
-package com.example.android.restapipoc;
+package com.example.android.restapipoc.apiutils;
 
 import com.example.android.restapipoc.model.CustomerResponse;
 import com.example.android.restapipoc.model.OrderResponce;

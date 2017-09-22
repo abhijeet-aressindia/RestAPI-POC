@@ -22,6 +22,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.android.restapipoc.Adapter.CustomerAdapter;
+import com.example.android.restapipoc.apiutils.ApiClient;
+import com.example.android.restapipoc.apiutils.ApiInterface;
 import com.example.android.restapipoc.database.DBHelper;
 import com.example.android.restapipoc.databinding.ActivityMainBinding;
 import com.example.android.restapipoc.model.CustomerResponse;

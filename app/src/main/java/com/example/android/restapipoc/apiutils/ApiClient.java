@@ -1,4 +1,4 @@
-package com.example.android.restapipoc;
+package com.example.android.restapipoc.apiutils;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

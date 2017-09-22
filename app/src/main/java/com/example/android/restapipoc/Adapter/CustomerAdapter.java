@@ -1,4 +1,4 @@
-package com.example.android.restapipoc;
+package com.example.android.restapipoc.Adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.android.restapipoc.R;
+import com.example.android.restapipoc.RecyclerViewListener;
 import com.example.android.restapipoc.model.CustomerResponse;
 
 import java.util.ArrayList;
