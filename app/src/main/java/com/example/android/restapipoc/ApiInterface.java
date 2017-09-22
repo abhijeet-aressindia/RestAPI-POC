@@ -1,6 +1,7 @@
 package com.example.android.restapipoc;
 
 import com.example.android.restapipoc.model.CustomerResponse;
+import com.example.android.restapipoc.model.OrderResponce;
 
 import java.util.List;
 
@@ -8,7 +9,6 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Path;
-import retrofit2.http.Query;
 
 
 public interface ApiInterface {
@@ -18,5 +18,5 @@ public interface ApiInterface {
     Call<List<CustomerResponse>> getEmployeeData(@Header("lat") double  lat , @Header ("long") double longValue );
  
     @GET(API_CUSTOMER_ORDER)
-    Call<CustomerResponse> getMovieDetails(@Path("CustomerID") int id, @Query("api_key") String apiKey);
+    Call<List<OrderResponce>> getOrderData(@Path("CustomerID") String id, @Header("lat") double  lat , @Header ("long") double longValue);
 }

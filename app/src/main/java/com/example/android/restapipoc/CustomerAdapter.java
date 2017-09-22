@@ -18,25 +18,33 @@ import java.util.ArrayList;
 public class CustomerAdapter extends RecyclerView.Adapter {
     private final Context mContext;
     private final ArrayList<CustomerResponse> mCustomerList;
+    private final RecyclerViewListener listener;
 
-    public CustomerAdapter(Context context, ArrayList<CustomerResponse> mCustomerList) {
+    public CustomerAdapter(Context context, RecyclerViewListener listener, ArrayList<CustomerResponse> mCustomerList) {
         mContext = context;
+        this.listener = listener;
         this.mCustomerList = mCustomerList;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new CustomerHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_customer, parent,false));
+        return new CustomerHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_customer, parent, false));
 
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        holder.itemView.setTag(position);
         ((CustomerHolder) holder).cumpanyName.setText(mCustomerList.get(position).getCompanyName());
         ((CustomerHolder) holder).contactName.setText(mCustomerList.get(position).getContactName());
         ((CustomerHolder) holder).phone.setText(mCustomerList.get(position).getPhone());
         ((CustomerHolder) holder).countryAndPostalCode.setText(mCustomerList.get(position).getCountry() + " - " + mCustomerList.get(position).getPostalCode());
-
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onItemClick(view, (int) view.getTag());
+            }
+        });
 
     }
 

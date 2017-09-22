@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.android.restapipoc.model.CustomerResponse;
+import com.example.android.restapipoc.model.OrderResponce;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
@@ -35,7 +36,7 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
         try {
             // Create Table with given table name with columnName
             TableUtils.createTable(cs, CustomerResponse.class);
-
+            TableUtils.createTable(cs, OrderResponce.class);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -58,6 +59,7 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
         return new ArrayList<>();
     }
 
+
     public <T> List<T> getAllOrdered(Class<T> clazz, String orderBy, boolean ascending) throws SQLException {
         try {
             Dao<T, ?> dao = getDao(clazz);
@@ -67,6 +69,7 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
         }
         return new ArrayList<>();
     }
+
 
     public <T> void fillObject(Class<T> clazz, T aObj) {
         try {
@@ -89,15 +92,28 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
 
     }
 
-    public <T> T getById(Class<T> clazz, Object aId) throws SQLException {
-        Dao<T, Object> dao = getDao(clazz);
-        return dao.queryForId(aId);
+    public <T> T getById(Class<T> clazz, Object aId) {
+        Dao<T, Object> dao = null;
+        try {
+            dao = getDao(clazz);
+            return dao.queryForId(aId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+
     }
 
-    public <T> List<T> query(Class<T> clazz, Map<String, Object> aMap) throws SQLException {
-        Dao<T, ?> dao = getDao(clazz);
+    public <T> List<T> query(Class<T> clazz, Map<String, Object> aMap) {
+        Dao<T, ?> dao = null;
+        try {
+            dao = getDao(clazz);
+            return dao.queryForFieldValues(aMap);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
 
-        return dao.queryForFieldValues(aMap);
     }
 
     public <T> List<T> queryNot(Class<T> clazz, String columnName, int value) throws SQLException {

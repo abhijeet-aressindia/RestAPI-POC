@@ -15,6 +15,7 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
@@ -45,7 +46,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecyclerViewListener {
     private static final int PERMISSION_REQUEST = 1001;
     private static final int REQUEST_CHECK_SETTINGS = 0x1;
     private String TAG = "MainActivity";
@@ -63,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<CustomerResponse> mCustomerList = new ArrayList<>();
     private CustomerAdapter mCustomerAdapter;
     private DBHelper mDBHelper;
+    private double longitude;
+    private double latitude;
 
 
     @Override
@@ -71,9 +74,21 @@ public class MainActivity extends AppCompatActivity {
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         mDBHelper = new DBHelper(this);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle(R.string.customers_title);
         mBinding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mCustomerAdapter = new CustomerAdapter(this, mCustomerList);
+        mCustomerAdapter = new CustomerAdapter(this, this, mCustomerList);
         mBinding.recyclerView.setAdapter(mCustomerAdapter);
+        mBinding.swipeToRefresh.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        startLocationUpdates();
+                    }
+                }
+        );
+
+
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mSettingsClient = LocationServices.getSettingsClient(this);
 
@@ -130,6 +145,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void makeAPICall(double latitude, double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        if (mBinding.swipeToRefresh.isRefreshing())
+            mBinding.swipeToRefresh.setRefreshing(false);
         stopLocationUpdates();
         final ProgressDialog mProgress = new ProgressDialog(this);
         mProgress.setCancelable(false);
@@ -152,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call<List<CustomerResponse>> call, @NonNull Throwable t) {
                 Log.e(TAG, t.toString());
-                Toast.makeText(MainActivity.this, t.toString(), Toast.LENGTH_SHORT).show();
                 mProgress.dismiss();
                 showSnackbar(t.toString(), R.string.retry, new View.OnClickListener() {
                     @Override
@@ -324,5 +342,14 @@ public class MainActivity extends AppCompatActivity {
                 mainTextStringId,
                 Snackbar.LENGTH_INDEFINITE)
                 .setAction(getString(actionStringId), listener).show();
+    }
+
+    @Override
+    public void onItemClick(View v, int position) {
+        Intent intent = new Intent(this, OrderActivity.class);
+        intent.putExtra("customerId", mCustomerList.get(position).getCustomerID());
+        intent.putExtra("latitude", latitude);
+        intent.putExtra("longitude", longitude);
+        startActivity(intent);
     }
 }
