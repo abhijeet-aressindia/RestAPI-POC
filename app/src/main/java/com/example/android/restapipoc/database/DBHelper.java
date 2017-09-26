@@ -13,7 +13,6 @@ import com.j256.ormlite.table.TableUtils;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -89,19 +88,6 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-    }
-
-    public <T> T getById(Class<T> clazz, Object aId) {
-        Dao<T, Object> dao = null;
-        try {
-            dao = getDao(clazz);
-            return dao.queryForId(aId);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-
     }
 
     public <T> List<T> query(Class<T> clazz, Map<String, Object> aMap) {
@@ -116,45 +102,4 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
 
     }
 
-    public <T> List<T> queryNot(Class<T> clazz, String columnName, int value) throws SQLException {
-        Dao<T, ?> dao = getDao(clazz);
-
-        return dao.queryBuilder().where().ne(columnName, value).query();
-    }
-
-    public <T> T queryFirst(Class<T> clazz, Map<String, Object> aMap) throws SQLException {
-        Dao<T, ?> dao = getDao(clazz);
-        List<T> list = dao.queryForFieldValues(aMap);
-        if (list.size() > 0)
-            return list.get(0);
-        else
-            return null;
-    }
-
-    public <T> Dao.CreateOrUpdateStatus createOrUpdate(T obj) throws SQLException {
-        Dao<T, ?> dao = (Dao<T, ?>) getDao(obj.getClass());
-        return dao.createOrUpdate(obj);
-    }
-
-    public <T> int deleteById(Class<T> clazz, Object aId) throws SQLException {
-        Dao<T, Object> dao = getDao(clazz);
-        return dao.deleteById(aId);
-    }
-
-    public <T> int deleteObjects(Class<T> clazz, Collection<T> aObjList) throws SQLException {
-        Dao<T, ?> dao = getDao(clazz);
-
-        return dao.delete(aObjList);
-    }
-
-    public <T> void deleteAll(Class<T> clazz) throws SQLException {
-        Dao<T, ?> dao = getDao(clazz);
-        dao.deleteBuilder().delete();
-    }
-
-    public static HashMap<String, Object> where(String aVar, Object aValue) {
-        HashMap<String, Object> result = new HashMap<String, Object>();
-        result.put(aVar, aValue);
-        return result;
-    }
 }
